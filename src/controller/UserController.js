@@ -54,12 +54,34 @@ exports.login = async (req, res) =>{
                 }
             }else{
                 res.clearCookie("jwtoken")
-                res.status(404).json({Massage : "Email dose not match!"}) 
+                res.status(404).json({Massage : "Username dose not match!"}) 
             }
     }
 
     catch(err){
         res.status(505).json({error: "server side err!"})
         console.log(err)
+    }
+}
+
+
+
+// Update Password
+exports.passwordUpdate = async (req, res) =>{
+    try{
+        const {name, username,  email, password, cpassword} = req.body
+        if(!password || !cpassword){
+            return res.status(422).json({ Error: "Pls ! Proper form full fill."})
+        }
+
+        const Username = req.username;
+
+        await User.updateOne({Username}, { $set:{password: password, cpassword: cpassword}})
+        res.status(201).json({Massage : "Password Update Successfull"}) 
+
+
+    }catch(err){
+        res.status(505).json({error: "server side err!"})
+        console.log(err) 
     }
 }

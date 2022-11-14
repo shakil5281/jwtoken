@@ -7,7 +7,6 @@ try{
     const decoded = jwt.verify(token, process.env.SECRET_KEY)
     const {username} = decoded
     req.username= username
-    console.log(req.username)
 
     next()
     }

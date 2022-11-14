@@ -16,6 +16,7 @@ router.get('/', AuthVeryfy, userDataController.home)
 // Post Router
 router.post('/signup', userController.register)
 router.post('/signin', userController.login)
+router.post('/update',AuthVeryfy, userController.passwordUpdate)
 
 
 
