@@ -69,16 +69,25 @@ exports.login = async (req, res) =>{
 // Update Password
 exports.passwordUpdate = async (req, res) =>{
     try{
-        const {name, username,  email, password, cpassword} = req.body
-        if(!password || !cpassword){
-            return res.status(422).json({ Error: "Pls ! Proper form full fill."})
+        const pass = req.body.password
+        const cpass = req.body.cpassword
+        if(!pass || !cpass){
+            return res.status(422).json({ Error: "Pls ! Data insert full fill."})
         }
 
+        const password = await bcrypt.hash(pass, 12)
+        const cpassword = await bcrypt.hash(cpass, 12)
         const Username = req.username;
 
-        await User.updateOne({Username}, { $set:{password: password, cpassword: cpassword}})
-        res.status(201).json({Massage : "Password Update Successfull"}) 
+        console.log(password)
+        console.log(cpassword)
 
+        if(password != cpassword){
+            res.status(404).json({ Error: "Password dose not match"})
+        }else{
+            await User.updateOne({Username}, { $set:{password: password, cpassword: cpassword}})
+            res.status(200).json({ Error: "Password Update Successfull"})
+        }
 
     }catch(err){
         res.status(505).json({error: "server side err!"})
