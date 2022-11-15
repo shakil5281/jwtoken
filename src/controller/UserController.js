@@ -2,6 +2,9 @@ const User = require('../model/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+
+
+// User Registration
 exports.register = async (req, res) =>{
 
     const {name, username,  email, password, cpassword} = req.body
@@ -28,6 +31,7 @@ exports.register = async (req, res) =>{
 }
 
 
+// User Login
 
 exports.login = async (req, res) =>{
     try{
@@ -41,6 +45,7 @@ exports.login = async (req, res) =>{
             if(userexits){
                 res.clearCookie("jwtoken")
                 const isMatch = await bcrypt.compare(password, userexits.password)
+                console.log(isMatch)
                 const token = await userexits.generateAuthToken()
                 res.cookie("jwtoken", token, {
                   expires: new Date(Date.now() + 25892000000),
@@ -68,25 +73,20 @@ exports.login = async (req, res) =>{
 
 // Update Password
 exports.passwordUpdate = async (req, res) =>{
+    const pass = req.body.password
+    const cpass = req.body.cpassword
+    if(!pass || !cpass){
+        return res.status(422).json({ Error: "Pls ! Data insert full fill."})
+    }
     try{
-        const pass = req.body.password
-        const cpass = req.body.cpassword
-        if(!pass || !cpass){
-            return res.status(422).json({ Error: "Pls ! Data insert full fill."})
-        }
-
-        const password = await bcrypt.hash(pass, 12)
-        const cpassword = await bcrypt.hash(cpass, 12)
-        const Username = req.username;
-
-        console.log(password)
-        console.log(cpassword)
-
-        if(password != cpassword){
+        if(pass != cpass){
             res.status(404).json({ Error: "Password dose not match"})
         }else{
-            await User.updateOne({Username}, { $set:{password: password, cpassword: cpassword}})
-            res.status(200).json({ Error: "Password Update Successfull"})
+            const Username = req.username
+            const  password = await bcrypt.hash(pass, 12)
+            const cpassword = await bcrypt.hash(cpass, 12)
+             await User.updateOne({Username}, { $set:{password: password, cpassword: cpassword}})
+             res.status(200).json({ Error: "Password Update Successfull"})
         }
 
     }catch(err){
