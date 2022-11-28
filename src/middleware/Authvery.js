@@ -5,9 +5,8 @@ try{
 
     const token = req.cookies.jwtoken
     const decoded = jwt.verify(token, process.env.SECRET_KEY)
-    const {username} = decoded
-    req.username= username
-
+    const {userId} = decoded
+    req.userId = userId
     next()
     }
      catch(err) {

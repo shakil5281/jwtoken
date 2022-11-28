@@ -1,7 +1,8 @@
 const User = require('../model/user')
 
+// Home page
 exports.home =  (req, res) => {
-    User.find({username: req.username}, {name: 1, username: 1, email: 1, _id: 0})
+    User.find({_id: req.userId}, {name: 1, username: 1, email: 1, phone: 1, _id: 0})
       .exec((err, data) => {
         if (err) {
           res.status(500).json({
@@ -16,3 +17,4 @@ exports.home =  (req, res) => {
       });
       
   };
+

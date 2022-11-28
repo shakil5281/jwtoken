@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
         requried: true,
         unique: true,
         trim: true,
+        lowercase: true,
+    },
+    phone: {
+        type: String,
+        requried: true,
     },
     password: {
         type: String,
@@ -35,6 +40,12 @@ const userSchema = new mongoose.Schema({
             },
         }
     ],
+    todos: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Crud"
+        },
+    ]
 })
 
   userSchema.pre('save', async function(next){
@@ -48,7 +59,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.generateAuthToken = async function(){
     try{
-        const token = jwt.sign({username: this.username}, process.env.SECRET_KEY);
+        const token = jwt.sign({userId: this._id}, "sdfsdfwefsdfsdfweretefgdfgergdfgergerg");
         this.tokens = this.tokens.concat({token: token});
         await this.save();
         return token;
